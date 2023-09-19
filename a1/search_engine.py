@@ -145,7 +145,7 @@ for record in docMatrix:
         score+=q*d
     docScores.append(score)
 
-# Display the sorted documents and their scores
+# document number and their scores
 for i,score in enumerate(docScores):
     print(f"Document {i+1} Score: {score}")
 
