@@ -1,0 +1,16 @@
+a
+SELECT COUNT(*) FROM Document;
+b
+SELECT COUNT(*) FROM Document AS D INNER JOIN Category AS C ON D.category_id = C.category_id WHERE C.category_name = 'Sports' ;
+c
+SELECT COUNT (*) FROM Term;
+d
+SELECT SUM(DT.count) FROM Document AS D INNER JOIN DocumentTerm AS DT ON D.document_id = DT.document_id WHERE D.title = 'Arizona';
+e
+SELECT SUM(DT.count) FROM Document AS D INNER JOIN DocumentTerm AS DT ON D.document_id = DT.document_id INNER JOIN Category AS C ON D.category_id=C.category_id WHERE C.category_name = 'Seasons';
+f
+SELECT SUM(count) FROM DocumentTerm AS DT WHERE DT.term= 'months';
+g
+SELECT D.title, SUM(DT.count) FROM Document AS D INNER JOIN DocumentTerm AS DT ON D.document_id = DT.document_id GROUP BY D.document_id ORDER BY SUM(DT.count) DESC LIMIT 1;
+h
+SELECT term, COUNT(*) FROM DocumentTerm AS DT GROUP BY DT.term ORDER BY COUNT(*) DESC LIMIT 1;

@@ -1,0 +1,25 @@
+{
+    "_id":"someID",
+    "term":"termName",
+    "num_chars":10,
+    "documents":[
+        {
+            "_id": "someId",
+            "category": "categoryName",
+            "text": "Document Text",
+            "title": "Document Title",
+            "num_chars":300,
+            "date": "2023-10-03 (some date)",
+            "term_count":3
+        },
+        {
+            "_id": "someId",
+            "category": "categoryName",
+            "text": "Document Text",
+            "title": "Document Title",
+            "num_chars":200,
+            "date": "2023-10-03 (some date)",
+            "term_count":2
+        }
+    ]
+}

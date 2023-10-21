@@ -1,0 +1,232 @@
+a How many documents are in D
+db.documents.aggregate( 
+    [
+        { $unwind: "$documents" },
+        {
+            $project : { 
+                document_id: "$documents._id",
+                title: "$documents.title"
+            }
+        },
+        { $group: { _id: "$document_id" } },
+        {
+            $group: { 
+                _id: null, 
+                document_count: { $sum : 1 }
+            }
+        },
+        {
+            $project: { 
+                _id: 0 , 
+                document_count:1
+            }
+        }
+    ]
+);
+b How many documents are in D from the category "Sports"? Requirement: query the
+tables by using the category name.
+db.documents.aggregate( 
+    [
+        { $unwind: "$documents" },
+        {
+            $project : { 
+                document_id: "$documents._id",
+                title: "$documents.title",
+                category: "$documents.category",
+            }
+        },
+        {
+            $match: { 
+                category: "Sports"
+            }
+        },
+        { $group: { _id: "$document_id" } },
+        {
+            $group: { 
+                _id: null, 
+                sport_doc_count: { $sum : 1 }
+            }
+        },
+        {
+            $project: { 
+                _id: 0 , 
+                sport_doc_count:1
+            }
+        }
+
+
+    ]
+);
+c How many distinct terms are in D
+db.documents.aggregate (
+    [
+        {
+            $group: { 
+                _id:null,
+                count: { 
+                    $sum : 1
+                }
+            }
+
+        },
+        {
+            $project: { 
+                _id:0,
+                count:1
+            }
+        }
+    ]
+);
+d How many terms (considering repetitions) are in the document “Arizona”? Requirement:
+query the tables by using the document title.
+db.documents.aggregate( 
+    [
+        { $unwind: "$documents" },
+        {
+            $project : { 
+                title: "$documents.title",
+                term_count: "$documents.term_count"
+            }
+        },
+        { $match : { title : "Arizona" } },
+        {
+            $group: { 
+                _id:null,
+                count : { $sum: "$term_count"}
+            }
+        },
+        {
+            $project: { 
+                _id:0,
+                count:1
+            }
+        }
+    ]
+);
+e How many terms (considering repetitions) are linked to the category "Seasons"?
+Requirement: query the tables by using the category name.
+db.documents.aggregate( 
+    [
+        { $unwind: "$documents" },
+        {
+            $project : { 
+                title: "$documents.title",
+                term_count: "$documents.term_count" ,
+                category: "$documents.category",
+            }
+        },
+        { $match : { category : "Seasons" } },
+        {
+            $group: { 
+                _id:null,
+                count : { $sum: "$term_count"}
+            }
+        },
+        {
+            $project: { 
+                _id:0,
+                count:1
+            }
+        }
+    ]);
+f How many times (considering repetitions) does the term "months" occur in D?
+db.documents.aggregate(
+    [
+        {
+            $match : { term : "months"}
+        },
+        {
+            $unwind: "$documents"
+        },
+        {
+            $project : { 
+                term_count: "$documents.term_count"
+            }
+        },
+        {
+            $group: { 
+                _id :null,
+                count: { $sum : "$term_count"}
+            }
+        },
+        {
+            $project: { 
+                _id:0,
+                count:1
+            }
+        }
+    ]
+);
+
+g
+What is the largest document (more terms - considering repetitions)? Requirement:
+output the document title and its corresponding number of terms.
+db.terms
+## if the titles are unique then you can simplify this and only cary over the title as the _id so you would be good, 
+but i assume that they are not and we need an id for each one so i will need to do some additional finesse
+the id carries on in group stages so i can 
+
+
+db.documents.aggregate([
+    { $unwind : "$documents" },
+    {
+        $project: {
+            document_id : "$documents._id",
+            term_count: "$documents.term_count",
+            title: "$documents.title"
+        }
+    },
+    {
+        $group: {
+            _id: {
+                document_id:"$document_id",
+                title : "$title"
+            },
+            doc_term_count: { 
+                $sum : "$term_count"
+            }
+        }
+    },
+    {
+        $project: { 
+            _id:0,
+            doc_term_count:1,
+            title: "$_id.title"
+        }
+    },
+    { 
+        $sort: { 
+            doc_term_count:-1
+        } 
+    },
+    { $limit:1 }
+]);
+
+h What is the most frequent term in D (considering the number of distinct documents)?
+Requirement: output the term and its corresponding occurrences.
+db.documents.aggregate (
+    [
+        { $unwind: "$documents"},
+        {
+            $group: {
+                _id: "$term",
+                frequency: {
+                    $sum : 1
+                }
+            } 
+        },
+        {
+            $sort: { 
+                frequency:-1
+            }
+        },
+        { $limit:1},
+        {
+            $project: {
+                _id:0,
+                term:"$_id",
+                frequency:1
+            }
+        }
+    ]
+);
