@@ -85,20 +85,20 @@ def crawlerThread(frontier: WebCrawlerFrontier):
                 print(e)
             except URLError:
                 print('The server could not be found!')
+            except Exception as e:
+                print("Unexpected error:", e)
 
 
 def storePage(html, url):
     # pymongo related stuff
-
     try:
         client = MongoClient('mongodb://localhost:27017/')
+        pages_collection = client['corpus']['pages']
+        page = {'_id': url, 'html': html}
+        pages_collection.insert_one(page)
+        pass
     except Exception:
         print("not able to connect to db")
-
-    pages_collection = client['corpus']['pages']
-    page = {'_id': url, 'html': html}
-    pages_collection.insert_one(page)
-    pass
 
 
 def target_page(soup: BeautifulSoup):
@@ -115,13 +115,20 @@ def extract_urls(soup: BeautifulSoup, linker_url: str):
     # Links might appear with full or relative addresses,
     #  and your crawler needs to consider this.
     urls = []
-    regex = re.compile(".html")
-    url_tags = soup.find_all("a", {'href': regex})
-    for url_tag in url_tags:
-        url = str(url_tag.attrs.get('href'))
-        full_url = urljoin(linker_url, url)
-        urls.append(full_url)
+    try:
+        regex = re.compile(".html")
+        url_tags = soup.find_all("a", {'href': regex})
+        for url_tag in url_tags:
+            url = str(url_tag.attrs.get('href'))
+            full_url = urljoin(linker_url, url)
+            urls.append(full_url)
+    except Exception as e:
+        print("Error extracting URLs:", e)
     return urls
+
+
+if __name__ == '__main__':
+    main()
 
 # logic i was planning because i thought we had to resolve them on our own
 # to check for relative or full addresses
@@ -130,9 +137,7 @@ def extract_urls(soup: BeautifulSoup, linker_url: str):
 # is a relative url
 # if num_of_components == 1:
 #     # pretty sure we can use urljoin since he says we can use urlib
-#     # and this is a utility function in a submodule
-
-
+#     # and this is a utility function in a submodule -- scrap this
 #     # case 1: root relative (begins with /)
 #     # take str (https?) + (hostname) + / + root relative string
 #     # check if it starts with a /
@@ -155,5 +160,3 @@ def extract_urls(soup: BeautifulSoup, linker_url: str):
 #     # is a full address, can add it directly
 #     urls.append(url)
 #     pass
-if __name__ == '__main__':
-    main()
