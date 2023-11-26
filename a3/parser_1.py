@@ -1,3 +1,10 @@
+# -------------------------------------------------------------------------
+# AUTHOR: Francisco Serrano
+# FILENAME: parser_1.py (parser.py conflicted with some standard file)
+# SPECIFICATION: use page we crawled before and extract the professor information
+# FOR: CS 4250 - Assignment 3
+# TIME SPENT: 2hrs
+# -----------------------------------------------------------*/
 from bs4 import BeautifulSoup
 from pymongo import MongoClient
 import pymongo.errors

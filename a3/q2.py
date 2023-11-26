@@ -1,3 +1,10 @@
+# -------------------------------------------------------------------------
+# AUTHOR: Francisco Serrano
+# FILENAME: q2.py
+# SPECIFICATION: Search related questions with beautifulsoup
+# FOR: CS 4250 - Assignment 3
+# TIME SPENT: 1hr
+# -----------------------------------------------------------*/
 from bs4 import BeautifulSoup
 import re
 try:

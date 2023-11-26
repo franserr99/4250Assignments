@@ -1,3 +1,10 @@
+# -------------------------------------------------------------------------
+# AUTHOR: Francisco Serrano
+# FILENAME: crawler.py
+# SPECIFICATION: Use seed url and crawl through the pages until you hit the target page
+# FOR: CS 4250 - Assignment 3
+# TIME SPENT: 2hrs
+# -----------------------------------------------------------*/
 from collections import deque
 from urllib.request import urlopen
 from urllib.error import HTTPError, URLError
